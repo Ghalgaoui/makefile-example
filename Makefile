@@ -1,15 +1,30 @@
-CC = gcc
-CFALGS = -g -O2
+CC ?= gcc
+CFLAGS += -Wall
+DESTDIR ?= /usr/local/bin/
 
-fact: fact.o
-	$(CC) -o fact fact.o 
+EXE = fact
+
+OBJS = fact.o
+
+.PHONY: all
+
+all: $(EXE)
+
+$(EXE): $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $<
+
+.o:.c
+	$(CC) $(CFLAGS) -c $^
+
+.PHONY: clean
 
 clean:
-	rm -rf *.o fact
-
-install:
-	cp -f fact /usr/bin/
+	rm -f *.o $(EXE)
 
 
+.PHONY: install
 
+install: $(EXE)
+	install -m 0755 -d ${DESTDIR}
+	install -m 0755 ${EXE} ${DESTDIR}
 
